@@ -19,16 +19,16 @@ Worked solutions to @dendibakh's perf-ninja labs (in progress)
     * [Replacing Branches With Lookup Tables](https://github.com/dendibakh/perf-ninja/tree/main/labs/bad_speculation/lookup_tables_1) | [Solution](labs/bad_speculation/lookup_tables_1)
     * [C++ Virtual Calls](https://github.com/dendibakh/perf-ninja/tree/main/labs/bad_speculation/virtual_call_mispredict) | [Solution](labs/bad_speculation/virtual_call_mispredict)
 * Core Bound:
-  * [Vectorization 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/vectorization_1) | [Solution](labs/core_bound/vectorization_1)
-  * [Vectorization 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/vectorization_2) | [Solution](labs/core_bound/vectorization_2)
-  * [Function Inlining](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/function_inlining_1) | [Solution](labs/core_bound/function_inlining_1)
+    * [Vectorization 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/vectorization_1) | [Solution](labs/core_bound/vectorization_1)
+    * [Vectorization 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/vectorization_2) | [Solution](labs/core_bound/vectorization_2)
+    * [Function Inlining](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/function_inlining_1) | [Solution](labs/core_bound/function_inlining_1)
+    * [Dependency Chains 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/dep_chains_1) | [Solution](labs/core_bound/dep_chains_1)
+    * [Dependency Chains 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/dep_chains_2) | [Solution](labs/core_bound/dep_chains_2)
+    * [Compiler Intrinsics 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_1) | [Solution](labs/core_bound/compiler_intrinsics_1)
+    * [Compiler Intrinsics 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_2) | [Solution](labs/core_bound/compiler_intrinsics_2)
 
 TODO: Add worked solutions for the following:
 
 * Core Bound:
-    * [Dependency Chains 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/dep_chains_1)
-    * [Dependency Chains 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/dep_chains_2)
-    * [Compiler Intrinsics 1](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_1)
-    * [Compiler Intrinsics 2](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_2)
     * [Compiler Intrinsics 3](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_3)
     * [Compiler Intrinsics 4](https://github.com/dendibakh/perf-ninja/tree/main/labs/core_bound/compiler_intrinsics_4)
