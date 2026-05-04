@@ -25,8 +25,9 @@ bench_partial_sum/iterations:100000       25.4 us         25.3 us       100000
 
 ### Solution
 
-Let's begin with an SSE solution. In our sliding window prefix sum, when we get to position `pos` in our output array,
-we need to subtract from our total the value at the position pointed to by `const uint8_t subtractVal = input.data() + pos - radius - 1`.
+Let's begin with an SSE (Streaming SIMD Extensions) solution. In our sliding window prefix sum, when we get to position `pos` in our output array,
+we need to subtract from our total the value at the position pointed to by `const uint8_t subtractVal = input.data() + pos - radius - 1`
+(the value that has dropped out of our window range).
 We then have to add the new value we have just added to our sliding window, `const uint8_t addVal = input.data() + pos + radius`.
 
 First of all, we need to convert the `currentSum` that we got from the prefix sum accumulations in the sliding window of
