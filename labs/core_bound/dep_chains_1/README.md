@@ -1,5 +1,37 @@
 # Lab: dep_chains_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+The `n`th node in the linked list cannot be accessed before the `n-1`th element, which in turn requires the `n-2`th
+element, and so on. This dependency chain cannot be broken, but can you think how we may be able to handle it better?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+Note from the algorithm that we compare every node in List A with every node in List B. Could we find a more efficient
+way of performing these comparisons?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Try grouping multiple nodes from List A and comparing each _batch_ with each node of list B. Which batch size gives you
+the best performance improvement, and can you think why that may be the case in theory?
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 Dependency chains in code can lead to bottlenecks in performance. By dependency chain, we refer to sections of code
@@ -122,3 +154,13 @@ Benchmark           Time             CPU   Iterations
 -----------------------------------------------------
 bench1           34.7 ms         34.7 ms           78
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/dep_chains_1/solution.cpp)
+
+</details>

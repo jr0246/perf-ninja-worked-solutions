@@ -1,5 +1,41 @@
 # Lab: compiler_intrinsics_2
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+We want to read as many `char`s at once by vectorising our code manually. Most machines should be able to handle up to
+256 bits at once. Which instruction set family from [Intel Intrinsics Guide](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html)
+would suit this in the best way?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+Use the AVX instructions. Now that we have 32 * 8-bit `char`s in a single vector, how can we efficiently find how many
+of these characters match the newline `\n` character? Try investigating what you can do with the `_mm256_set1_epi8`,
+`_mm256_cmpeq_epi8`, and `_mm256_movemask_epi8` instructions.
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Assuming you have worked out how to use the mask to extract the positions of `\n` in a 256-bit vector,
+the count of zeroes between each set bit (`1`) in the resulting mask represents the length of a line in our input. Some
+lines will be greater than 32 in length, so you'll need a way to track this across iterations. Don't forget to handle any leftover
+lines that are too small to fill a 256-bit vector.
+</details>
+
+<br>
+
+<details>
+
+<summary><b>Worked Solution:</b></summary>
 ## Background:
 
 In this lab, the goal is to find the longest line in a file; more specifically, the longest continuous string of text
@@ -138,3 +174,13 @@ Benchmark                       Time             CPU   Iterations
 -----------------------------------------------------------------
 bench1/iterations:8000       86.3 us         86.1 us         8000
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/compiler_intrinsics_2/solution.cpp)
+
+</details>

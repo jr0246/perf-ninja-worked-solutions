@@ -1,5 +1,55 @@
 # Lab: compiler_intrinsics_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+Can you think how using SIMD instructions here could help us process more elements at once? Have a look at the SSE
+family intrinsics in the [Intel Intrinsics Guide.](https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html)
+to see which you think would be relevant to our case. Recall the current code manipulates 8-bit integers, one at a time.
+
+The code uses a sliding window to calculate a blur for position `pos` across a range
+`[input.data() + pos - radius, input.data() + pos + radius]`, removing `input.data() + pos + radius - 1` from the
+sliding window to ensure the width remains no greater than `2 * radius`. Try the `_mm_loadu_si64` SSE instruction to load
+64 bits at once (i.e. 8 `pos` starting points).
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+What do we do with any remaining elements that do not fit in a block of eight and thus cannot be read by our SIMD
+instructions?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+The scalar problem uses prefix sums. To do this the SIMD way, you'll also need to know the algorithm for vectorised
+prefix sums. For a vector `[1, 2, 3, 4]`, you would have:
+
+1. Start with the base: `res = [1, 2, 3, 4]`
+2. Shift base to the right by 2<sup>0</sup> = 1 and add to the result: `res = [1, 2, 3, 4] + [0, 1, 2, 3] = [1, 3, 5, 7]`
+3. Shift base to the right by 2<sup>1</sup> = 2 and add: `res = [1, 3, 5, 7] + [0, 0, 1, 2] = [1, 3, 6, 9]`
+4. Shift base to the right by 2<sup>2</sup> = 4 and add: `res = [1, 3, 6, 9] + [0, 0, 0, 0] = [1, 3, 6, 9]`
+5. Stop as there are no more adds to perform (if there were, we would shift by 2<sup>3</sup> = 8, and so on).
+
+Be wary that these intrinsics give us _little-endian_ binary numbers, so your shift operations with intrinsics will need
+to be _left_ shifts as opposed to right (as seen above in our algorithm, which uses big-endian representation).
+You'll be using `_mm_slli_si128` for these left shifts.
+</details>
+
+<br>
+
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 The image smoothing algorithm in this lab uses a sliding window approach to compute the prefix sum of a range of values
@@ -164,3 +214,13 @@ Benchmark                                    Time             CPU   Iterations
 ------------------------------------------------------------------------------
 bench_partial_sum/iterations:100000       10.4 us         10.4 us       100000
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/compiler_intrinsics_1/solution.cpp)
+
+</details>
