@@ -1,5 +1,41 @@
 # Lab: dep_chains_2
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+This is a dependency chain problem. The first thing you should try to do is identify why given iterations of the loop in
+`randomParticleMotion` in `solution.hpp` are not independent. Is there a value used in iteration N that depends on what
+is calculated in iteration N-1?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+Take a look at the implementation of `XorShift32::gen()`. What do you notice about the return value of this function?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+The trick to improving performance in dependency chain problems (where the dependency cannot be changed) is to try
+to handle "chunks" of the chain per iteration, rather than a single node. See if you can find an optimal solution for
+your machine.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 The program in this lab simulates random particle motion. The relevant code loop is here in `solution.hpp`:
@@ -181,3 +217,13 @@ void randomParticleMotion(std::vector<Particle>& particles, uint32_t seed) {
 In this scenario, this method does not bring about much of a performance benefit at all, but that is expected as the
 dependency chain of `rng.gen()` is extremely short. However, in most code affected by dependency chains, the chains will
 not be so trivial, so knowing this bonus technique will be necessary in most real situations!
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/dep_chains_2/solution.cpp)
+
+</details>

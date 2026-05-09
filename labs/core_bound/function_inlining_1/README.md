@@ -1,5 +1,40 @@
 # Lab: function_inlining_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+The problem here is the `qsort` function. What about this function makes it difficult for the compiler to perform inline
+optimisations?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+`qsort` is a compiled C library. The compiler has no view into the compiled code and thus cannot inline it, meaning a
+function call is required. Is there a more modern approach?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Consider `std::sort` and a custom comparator instead of `qsort`. If you notice a performance improvement, what changes
+do you expect to see in the assembly output?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 Function inlining is one of the most important compiler optimisations for performance. A normal function call incurs
@@ -60,3 +95,13 @@ Benchmark                       Time             CPU   Iterations
 -----------------------------------------------------------------
 bench1/iterations:5000        518 us          518 us         5000
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/function_inlining_1/solution.cpp)
+
+</details>

@@ -1,5 +1,46 @@
 # Lab: vectorization_2
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+The add carry operation (due to the potential overflow) makes it hard for the compiler to vectorise this code. A normal
+approach to attempting to solve this issue is to widen the accumulators we use in our loop. Here, we are using
+`uint16_t` for `acc`. How could this be updated to help us begin to break the dependency between the carry and the add?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+Try using `uint32_t` for `acc`. This will essentially allow us to accumulate two lots of 16-bit integers (or two of the
+"old" `acc`s at once).
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Overflows should be handled carefully. Try limiting the number of elements from `blob` that you process in one go (i.e. batch of integers), such
+that you will never observe more than one overflow in `acc` in this batch. Without this, it is possible for an overflow to happen in
+both the low 16-bits _and_ in the high, and it is possible to miss these by not staggering our consumption of `blob` and periodically
+checking for overflows.
+
+Don't forget to combine the top and bottom 16-bit integers for the final result (as well as any overflows caused by
+that operation!).
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 This lab is based on a basic algorithm that computes the checksum of a set of data. The use of checksums is widespread;
@@ -64,8 +105,8 @@ uint32_t acc = 0;
 ```
 
 Next, we want to add as many integers from `blob` as possible in chunks so that we get no more than one 32-bit overflow
-per chunk of additions. This is quite easy to achieve; the largest value we will encounter from blob is `2<sup>16</sup> - 1`, so
-if we never process more than `2<sup>15</sup>` (`1 << 16`) numbers at a time, we will not cause the 32-bit accumulator
+per chunk of additions. This is quite easy to achieve; the largest value we will encounter from blob is 2<sup>16</sup> - 1, so
+if we never process more than 2<sup>15</sup> (`1 << 16`) numbers at a time, we will not cause the 32-bit accumulator
 to overflow more than once.
 
 We therefore introduce a chunk to the loop:
@@ -127,7 +168,7 @@ uint16_t checksum(const Blob& blob) {
     prev = acc;
   }
   uint16_t top = acc >> 16;
-  uint16_t bottom = acc & two_pow_16 - 1;
+  uint16_t bottom = acc & (two_pow_16 - 1);
   uint16_t ans = top + bottom;
   ans += ans < top;
   return ans;
@@ -142,3 +183,4 @@ Benchmark                        Time             CPU   Iterations
 ------------------------------------------------------------------
 bench1/iterations:83000       3.61 us         3.61 us        83000
 ```
+</details>

@@ -1,5 +1,57 @@
 # Lab: vectorization_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+Using `perf` or reading the code should show you that the loops in `compute_alignment` are the bottleneck. Begin with
+understanding the access pattern of the data in the two matrices, `sequences1` and `sequences2`, and see if you notice a
+pattern of operations.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+1. Each sequence matrix has dimension `sequence_count_v x sequence_size_v`, or `16 x 200`.
+2. For each of the 16 rows, we perform the following:
+   - Extract `i`th row from `sequences1` and `sequences2`.
+   - While fixed on the `j`th element (or column) of the row `sequences2[i]`, iterate through each column of `sequences1[i]` and perform the necessary operations.
+   - Repeat the above while iterating over the `j` columns of `sequences2[i]`.
+
+The crucial thing to note here is that we are performing the exact same operation multiple times. This indicates that
+there is a potential to perform these operations in parallel. How could we restructure our matrices such that their
+memory layout (i.e. matrix dimension) is easier for the compiler to vectorise?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+We should transpose our matrices. This will give us `200 x 16` and these 16 columns will hold our score data (16-bit as the result type).
+That means we should get 16 * 16-bit = 256-bit width for our matrix, and this is exactly the size of the YMM/AVX registers.
+This is a big step in assisting the compiler to produce auto-vectorised assembly code.
+
+Now that the matrix is transposed, we are no longer trying to deal with scalar score accumulators in our loop
+(such as `score_column`, `horizontal_gap_column`, and `last_vertical_gap`), but rather _vectorised_ values of
+width `sequence_count_v` = 16. These types should be updated to `std::array`s (or an equivalent) of size 16,
+and we should wrap them with a for-loop over each element to update each entry. Written in this way, the compiler should
+find it easier to generate vectorised code for us.
+
+Also make sure to update the existing loops in order to reflect the updated process; some may no longer be required.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 In this lab, we have two sets of matrices which represent two collections of sequences of equal length. The algorithm
@@ -20,7 +72,7 @@ If we analyse the code, we understand the following:
 1. Each matrix has dimension `sequence_count_v x sequence_size_v`, or `16 x 200`.
 2. For each of the 16 rows, we perform the following:
    - Extract `i`th row from `sequences1` and `sequences2`.
-   - While fixed on the `j`th element (or column) of the row `sequences2[i]`, iterate through each column of `sequences[1]` and perform the necessary operations.
+   - While fixed on the `j`th element (or column) of the row `sequences2[i]`, iterate through each column of `sequences1[i]` and perform the necessary operations.
    - Repeat the above while iterating over the `j` columns of `sequences2[i]`.
 
 The crucial thing to note here is that we are performing the exact same operation multiple times. This indicates that
@@ -185,3 +237,13 @@ Inspecting the assembly produced by the compiler using `perf report` shows plent
  282 │       vmovdqa      YMMWORD PTR [rsp+0xe0],ymm5       
 ```
 
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/core_bound/vectorization_1/solution.cpp)
+
+</details>
