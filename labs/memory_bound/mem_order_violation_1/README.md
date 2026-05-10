@@ -1,5 +1,49 @@
 # Lab: mem_order_violation_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+The array population pattern that we need to analyse is this snippet of code:
+
+```c++
+for (int i = 0; i < image.width * image.height; ++i)
+    hist[image.data[i]]++;
+```
+
+We notice that there arises a problem if we encounter a long consecutive sequence in which the elements of `image.data`
+are identical. For the sake of example, let's imagine that we have a block of ten elements adjacent to each other in
+the `image.data` array, and they all equal `100`. Can the CPU perform the necessary modifications to `hist` out of
+order?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+If we have a long, consecutive sequence in which the elements of `image.data` are identical, the CPU will be forced to
+process these instructions on `hist` in order, as an increment operation requires knowledge of the previous value (which
+means all prior increments must be complete).
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Try breaking the longer pipeline into smaller chunks to reduce the likelihood of consecutive identical elements of
+`image.data` forcing in-order execution.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 The function under benchmark is the following:
@@ -28,7 +72,7 @@ In modern CPUs, a simplified view of how instructions are processed in a pipelin
 Modern CPUs support both In-Order and Out-of-Order (OOO) execution. In the former, the instructions are run strictly in
 program order, whereas Out-of-Order execution allows a CPU to begin pipelining and running executions of subsequent
 instructions _before the completion_ of prior ones (prior in program order). OOO execution can provide a noticeable
-performance benefit by getting a headstart in finishing later operations.
+performance benefit by getting a head start in finishing later operations.
 
 However, there are restrictions on OOO executions; the CPU must produce the exact same result while running in OOO as
 it would have done otherwise. An instruction therefore must not proceed if its execution is constrained by dependencies
@@ -45,7 +89,7 @@ for (int i = 0; i < image.width * image.height; ++i)
     hist[image.data[i]]++;
 ```
 
-We notice that there arises a problem if we encounter a long consecutive sequence in which the elements of `image.data`
+We notice that there arises a problem if we encounter a long, consecutive sequence in which the elements of `image.data`
 are identical. For the sake of example, let's imagine that we have a block of ten elements adjacent to each other in
 the `image.data` array, and they all equal `100`. Can the CPU perform the necessary modifications to `hist` out of
 order?
@@ -145,3 +189,13 @@ coins/1          32.2 us         32.2 us        86758
 pepper/2         28.3 us         28.3 us        98598
 pixabay/3        12.9 ms         12.9 ms          218
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/memory_bound/mem_order_violation_1/solution.cpp)
+
+</details>

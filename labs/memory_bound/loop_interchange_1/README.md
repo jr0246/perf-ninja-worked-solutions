@@ -1,5 +1,52 @@
 # Lab: loop_interchange_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+Start by identifying the problematic loop in the code. You can either do this by eye, given how short the code is, or by
+using a tool like `perf` and running `perf stat` on the compiled binary.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+`multiply` in `solution.cpp` has an inefficiency. Can you see why? Have a think about the memory access pattern given
+the current loop order.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+This is the problematic code:
+
+```c++
+  for (int i = 0; i < N; i++) {
+    for (int j = 0; j < N; j++) {
+      for (int k = 0; k < N; k++) {
+        result[i][j] += a[i][k] * b[k][j];
+      }
+    }
+  }
+```
+
+The memory access pattern for matrix `b` is suboptimal. It can be fixed by selecting a better ordering of the loops which
+will make the code more cache friendly.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 The goal of this lab is to locate and adjust a suboptimal data access pattern caused by the ordering of loops.
@@ -27,7 +74,6 @@ bench1           1261 ms         1261 ms            1
 ```
 
 If we analyse the hotspots in `perf`, we notice it singles out a particular area in the code:
-
 
 
 ```
@@ -105,3 +151,13 @@ bench1/iterations:1        126 ms          126 ms            1
 
        0.134680809 seconds time elapsed
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/memory_bound/loop_interchange_1/solution.cpp)
+
+</details>

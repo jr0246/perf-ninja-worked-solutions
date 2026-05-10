@@ -1,5 +1,42 @@
 # Lab: false_sharing_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+How many `Accumulator` objects fit on a cache line on your system? Using what you know about CPU caches, what could be
+an issue that arises due to multithreaded writes of the same cache line?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+`Accumulator` has size 4, so 16 of them fit into a cache line on x86. There is a fairly high probability that at least
+one thread will try to update an `Accumulator` that belongs to a cache line accessed by another thread. Your processor
+needs to ensure that all cores that access th atomic variable wrapped in `Accumulator` (and hence the cache line it
+lives on) see the most recent update. What performance impact does this have on threads that had previously read the old
+cache line before an `Accumulator` in it was updated?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+To avoid false sharing, you should ensure that each `Accumulator` object lives on its own cache line.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 This lab runs in a multithreaded environment, where multiple threads are tasked to increment a container of atomic
@@ -195,3 +232,14 @@ Analysing the Cache-To-Cache report shows the cache line sharing has been elimin
 
 _Note: a report may still show some cache line sharing, but it will be related to other processes, not the
 lab code itself. This should be made clear when looking at the source of the shared cache line in the report._
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/memory_bound/false_sharing_1/solution.cpp)
+
+</details>

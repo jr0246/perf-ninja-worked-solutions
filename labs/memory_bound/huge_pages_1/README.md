@@ -1,5 +1,42 @@
 # Lab: huge_pages_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+Using what you know about how an operating system maps between virtual memory and physical memory, what can you say about
+the number of regular pages (whose size is roughly ~4kB on Linux, for example) that would be needed to map the memory in
+the arrays created in this lab? Why may this number be bad for performance?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+Recall that the Translation Lookaside Buffer (TLB), which caches memory addresses for extremely fast lookups (i.e. a handful
+of CPU cycles), has a limited size. How can we make use of huge pages in our program to reduce the pressure on the TLB?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Set up huge pages support on your system and work out how to create the `double` arrays in `allocateDoublesArray` in
+a huge page of memory, rather than a regular one. Based on the theory, what performance improvements do you expect to
+see, and why?
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 This lab involves processing several arrays of doubles whose contents are in the tens of millions.
@@ -23,11 +60,12 @@ this is an extremely slow lookup, the results of these lookups are stored in a c
 cache associated with it on its memory-management unit (MMU), known as the Translation Lookaside Buffer (TLB).
 The idea of the TLB is to provide extremely fast lookups of data that are regularly retrieved by the process.
 
-When mapping a large memory space, such as on the order of megabytes as found in this program, the sheer number of pages
+When mapping a large memory space, such as on the order of hundreds of megabytes or even gigabytes, the sheer number of pages
 required to map the virtual memory to physical memory puts pressure on the TLB. The standard page size in Linux is 4 kB,
-meaning thousands of pages would be needed to map all the memory used by the arrays in this algorithm. This exceeds the
-number of entries that can be held in the TLB at a given time. Combined with the observation that this
-algorithm performs data lookups in a random order, a very high number of expensive TLB cache misses is likely to occur.
+meaning thousands (or even millions )of pages would be needed to map all the memory used by the arrays in an algorithm like this.
+This exceeds the number of entries that can be held in the TLB at a given time (which is usually around 4,000).
+Combined with the observation that this algorithm performs data lookups in a random order,
+a very high number of expensive TLB cache misses is likely to occur.
 
 By using huge pages (2MB), we can drastically increase the amount of memory mapped by one page (and thus one TLB entry)
 by 512 times. This reduces the risk of TLB misses, as the cache will be able to store mappings for a much larger region 
@@ -78,3 +116,13 @@ inline auto allocateDoublesArray(size_t size) {
   return std::unique_ptr<double[], decltype(deleter)>(static_cast<double*>(ptr), std::move(deleter));
 }
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/memory_bound/huge_pages_1/AllocateDoublesArray.hpp)
+
+</details>

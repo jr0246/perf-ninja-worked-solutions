@@ -1,5 +1,48 @@
 # Lab: swmem_prefetch_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+Due to the randomness of the inputs, the hardware prefetcher cannot help us by loading data we will need in future
+loop iterations. We will need to do this manually using software prefetching via compiler intrinsics.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+There are a few steps to consider when adapting a loop to prefetch data:
+
+1. Ensure the data that are being prefetched are loaded sufficiently early; there is a prefetching window which must be
+   satisfied between the load and the use of the data. This window is the time between the moment the memory address is known
+   and the time at which the data at that address are required. If this interval is too short, the Out-Of-Order CPU engine
+   cannot perform the prefetching.
+2. The data should be prefetched at the absolute latest possible moment. This is because such prefetching can cause
+   data relevant for intermediate loop iterations to be evicted from the cache, which in turn can add overheads due to
+   subsequent cache misses.
+3. Avoid loading data that are likely already in the cache.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Try experimenting with a sensible "step" size in each iteration such that you issue a prefetching request for some value
+that will be used N iterations from now. Try to tune N such that it fits the criteria laid out above.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 In this lab, we have a large hash map of size ~32MB. Its size is such that it will not all fit into cache. This means we
@@ -146,3 +189,13 @@ Naturally, we are still memory bound, but it has decreased from 37.7% to 24.0% o
 benchmark runs significantly faster: 43.5 ms for 24 iterations vs. 96.1 ms for 7 iterations. This translates to
 1.81 ms/iteration vs. 13.7 ms/iteration - a speed increase of almost 87%! The penalty of cache/TLB misses is extreme and
 anything that can be done to minimise it will make code noticeably faster.
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/tree/golden/labs/memory_bound/swmem_prefetch_1)
+
+</details>

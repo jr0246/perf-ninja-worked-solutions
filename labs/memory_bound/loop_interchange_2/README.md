@@ -1,5 +1,79 @@
 # Lab: loop_interchange_2
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+There is one loop in the code that has a suboptimal memory access pattern (one that causes a large number of cache misses).
+Identify it, work out what the ideal loop iteration pattern should look like, and refactor accordingly.
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+The loop in question is this one:
+
+```c++
+for (int i = 0; i < radius + 1 + radius; i++) {
+    dot += input[(r - radius + i) * width + c] * kernel[i];
+}
+```
+
+It is actually nested in two other loops:
+
+```c++
+for (int c = 0; c < width; c++) {
+    ...
+    for (int r = 0; r < std::min(radius, height); r++) {
+        ...
+        for (int i = 0; i < radius + 1 + radius; i++) {
+            dot += input[(r - radius + i) * width + c] * kernel[i];
+        }
+        ...
+    }
+    ...
+}
+```
+
+Think about what the ideal memory access pattern should be. From there, you can work out what would need to change in
+this loop layout to achieve that goal.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+The code loops over `c`, then `r`, then `i`. However, the ideal loop nest hierarchy should be `r` -> `i` -> `c`:
+
+```c++
+for (int r = 0; r < std::min(radius, height); r++) {
+    ...
+    for (int i = 0; i < radius + 1 + radius; i++) {
+        ...
+        for (int c = 0; c < width; c++) {
+            ...
+        }
+        ...
+    }
+...
+}
+```
+
+What change do we need to make to the existing variables in our nested loop to allow us to rearrange the order? Normally,
+you need to increase the dimension of any accumulator to allow the refactoring. In this case, focus on `dot`.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
 This lab involves an algorithm that applies Gaussian blur to a supplied input image.
@@ -151,3 +225,13 @@ C0    RET              Retiring.Heavy_Operations           % Slots              
 C0-T0 MUX                                                  %                              8.00  
 C0-T1 MUX                                                  %                              8.00 
 ```
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/blob/golden/labs/memory_bound/loop_interchange_2/solution.cpp)
+
+</details>

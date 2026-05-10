@@ -1,8 +1,40 @@
 # Lab: mem_alignment_1
 
+## Hints
+
+<details>
+<summary><b>Hint 1:</b></summary>
+
+We want the start and end of each row of our matrices in question to coincide with a cache line boundary.
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 2:</b></summary>
+
+The `alignas` keyword can be used for the beginning of the matrix. What else would need to be done to ensure the end
+of the row finishes at a cache line boundary?
+</details>
+
+<br>
+
+<details>
+<summary><b>Hint 3:</b></summary>
+
+Round up the length of the row to meet the next alignment boundary. This will involve adding empty padded columns to
+the matrix.
+
+</details>
+
+<br>
+
+<details>
+<summary><b>Worked Solution:</b></summary>
+
 ## Background:
 
-This lab is all about memory alignment and the penalties that can be incurred do to the loading and storing of
+This lab is all about memory alignment and the penalties that can be incurred due to the loading and storing of
 incorrectly aligned data. The example given in the lab is matrix multiplication where the matrices are not correctly
 aligned in memory.
 
@@ -117,3 +149,13 @@ bench1/_1024                    127967 us       127944 us           22
 While we don't notice too much of an impact for the smaller sized matrices, we see the performance of `511` now roughly
 equal `512`, which makes sense as `511` now runs with a width of 512 bytes. Interestingly, `513` (now width 528 bytes)
 appears to run faster than even the `512` case!
+</details>
+
+<br>
+
+<details>
+<summary><b>Code for Solution (Link):</b></summary>
+
+[Link to Solution](https://github.com/dendibakh/perf-ninja/tree/golden/labs/memory_bound/mem_alignment_1)
+
+</details>
