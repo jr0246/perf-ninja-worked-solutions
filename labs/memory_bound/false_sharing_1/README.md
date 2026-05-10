@@ -17,7 +17,7 @@ an issue that arises due to multithreaded writes of the same cache line?
 
 `Accumulator` has size 4, so 16 of them fit into a cache line on x86. There is a fairly high probability that at least
 one thread will try to update an `Accumulator` that belongs to a cache line accessed by another thread. Your processor
-needs to ensure that all cores that access th atomic variable wrapped in `Accumulator` (and hence the cache line it
+needs to ensure that all cores that access the atomic variable wrapped in `Accumulator` (and hence the cache line it
 lives on) see the most recent update. What performance impact does this have on threads that had previously read the old
 cache line before an `Accumulator` in it was updated?
 
